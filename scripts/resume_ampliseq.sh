@@ -10,7 +10,7 @@ module load singularity
 
 
 while IFS= read -r line; do
-
+  
   LINE=($line)
   project=${LINE[0]}
   RUN_NAME=${LINE[1]}
@@ -19,10 +19,13 @@ while IFS= read -r line; do
     -profile abims \
     -params-file ./input/ampliseq/params_ampliseq.yaml \
     --input ./output/fetchngs/${project}/samplesheet/samplesheet.csv \
-    --outdir ./output/ampliseq/${project} \
+    --outdir ./output/ampliseq_2db/${project} \
     -resume $RUN_NAME
-
+    #if successful, delete tmp/ampliseq_projectsTOresume.tsv corresponding line
+    if (( $(tail -n 1 .nextflow/history | cut -f4)=="OK" )) && tail -n 1 .nextflow/history | grep -q ${project}  ; then
+      RUN_NAME=$(tail -n 1 .nextflow/history | cut -f3)
+      echo "ampliseq resumed run on the project ${project} succeeded."
+      sed -i "/${RUN_NAME}/d" ./tmp/ampliseq_projectsTOresume.tsv
+    fi
 done < tmp/ampliseq_projectsTOresume.tsv
 
-#if successful, delete tmp/ampliseq_projectsTOresume.tsv corresponding line
-#remove file if empty
