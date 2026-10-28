@@ -15,8 +15,8 @@ module load singularity
 #to run fetchngs for each of them.
 
 ls input/fetchngs/samplesheet | \
-    grep ".csv" | \
-    sed 's/.csv//' | \
+    grep -E "^\S+\.(csv|tsv|txt)$" | \
+    sed -E 's/(\.csv|\.tsv|\.txt)//' | \
     grep -E "PRJ|SRR|SRX|SRS|SAM|SRP|SRA|ERR|ERX|ERS|ERP|ERA|DRR|DRX|DRS|DRP|DRA|GSM|GSE" \
     > tmp/projects_list.txt
 
