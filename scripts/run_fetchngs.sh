@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+date
 
 #SBATCH --partition long
 #SBATCH --cpus-per-task 1
@@ -49,3 +50,5 @@ while IFS= read -r project; do
   fi
 
 done < tmp/projects_list.txt
+
+date

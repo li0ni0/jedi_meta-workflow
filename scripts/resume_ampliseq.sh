@@ -19,7 +19,7 @@ while IFS= read -r line; do
     -profile abims \
     -params-file ./input/ampliseq/params_ampliseq.yaml \
     --input ./output/fetchngs/${project}/samplesheet/samplesheet.csv \
-    --outdir ./output/ampliseq/${project} \
+    --outdir ./output/ampliseq_2db/${project} \
     -resume $RUN_NAME
 
 done < tmp/ampliseq_projectsTOresume.tsv

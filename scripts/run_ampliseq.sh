@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+date
+
 #SBATCH --partition long
 #SBATCH --cpus-per-task 1
 #SBATCH --mem 5GB
@@ -30,7 +32,7 @@ while IFS= read -r project; do
         -profile abims \
         -params-file ./input/ampliseq/params_ampliseq.yaml \
         --input ./output/fetchngs/${project}/samplesheet/samplesheet.csv \
-        --outdir ./output/ampliseq/${project}
+        --outdir ./output/ampliseq_2db/${project}
     fi
 
     if (( $(tail -n 1 .nextflow/history | cut -f4)=="ERR" )) && tail -n 1 .nextflow/history | grep -q ${project}  ; then
@@ -52,3 +54,5 @@ if [[ -f "tmp/ampliseq_projectsTOresume.tsv" &&  $(wc -l < "tmp/ampliseq_project
   echo "It lists the project(s) for which an error occurred when running ampliseq and their associated run name."
   cat tmp/ampliseq_projectsTOresume.tsv
 fi
+
+date
