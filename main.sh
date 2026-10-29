@@ -68,5 +68,9 @@ module load r/4.5.2
 
 sbatch \
     #--mem 20GB \
-    #--output output/agregated/taxonomy \
     --wrap="Rscript scripts/consensus_taxo.R"
+
+sbatch \
+    #--mem 20GB \
+    #--output output/agregated/taxonomy \
+    --wrap="Rscript scripts/export.R"
