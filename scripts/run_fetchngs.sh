@@ -9,24 +9,9 @@ module load nextflow/26.04.4
 module load singularity
 
 
-#Gets the list of projects (can be any type of ID supported by fetchngs)
-#and lists them in a file
-#to run fetchngs for each of them.
-
-ls input/fetchngs/samplesheet | \
-    grep -E "^\S+\.(csv|tsv|txt)$" | \
-    grep -E "PRJ|SRR|SRX|SRS|SAM|SRP|SRA|ERR|ERX|ERS|ERP|ERA|DRR|DRX|DRS|DRP|DRA|GSM|GSE" \
-    > tmp/projects_files_list.txt
-
-echo "The file tmp/projects_files_list.txt was created."
-echo "The projects' IDs are:"
-cat tmp/projects_files_list.txt
-
-
 #Check if output/fetchngs/$project exists and run fetchngs if not
-#for all projects listed in tmp/projects_files_list.txt
+#for all projects listed automatically in tmp/projects_files_list.txt or manually in $add_projects
 while IFS= read -r project_file; do
-  
   project="${project_file%.*}"
   DIR=output/fetchngs/$project
 
@@ -47,4 +32,4 @@ while IFS= read -r project_file; do
     fi
   fi
 
-done < tmp/projects_files_list.txt
+done < $1
