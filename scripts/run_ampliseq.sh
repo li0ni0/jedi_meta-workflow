@@ -3,7 +3,7 @@
 #SBATCH --partition long
 #SBATCH --cpus-per-task 1
 #SBATCH --mem 5GB
-#SBATCH --output run_ampliseq_21_10.out
+#SBATCH --output run_ampliseq.out
 
 module load nextflow/26.04.4
 module load singularity
@@ -34,8 +34,10 @@ while IFS= read -r project_file; do
         --outdir ./output/ampliseq_2db/${project}
     fi
 
-    if (( $(tail -n 1 .nextflow/history | cut -f4)=="ERR" )) && tail -n 1 .nextflow/history | grep -q ${project}  ; then
-      RUN_NAME=$(tail -n 1 .nextflow/history | cut -f3)
+    last_line=$(tail -n 1 .nextflow/history)
+    status=$(echo ${last_line} | cut -f4)
+    if [[ $status == "ERR" ]] && echo "$last_line" | grep -q "${project}"; then
+      RUN_NAME=$(echo ${last_line} | cut -f3)
       echo "ampliseq run on the project ${project} failed. It will be resumed -resume ${RUN_NAME} (run name)."
 
       echo -e "${project}\t${RUN_NAME}" >> tmp/ampliseq_projectsTOresume.tsv

@@ -1,5 +1,6 @@
 #Make consensus taxonomy from pr2 and silva results
 
+#setwd("/shared/projects/jedi_meta/workflow")
 
 library(tidyverse)
 library(stringmagic)
@@ -8,11 +9,14 @@ library(stringr)
 source("scripts/functions_taxo.R")
 
 #Reference databases and their version as written in ampliseq/dada2 output
-refdbs <- c("pr2_5_1_0", "silva_138_2")
+refdbs <- c("pr2_5_1_0", "silva_138_2") #replace with silva_144
 
 
 # Read files ----
-projects_list <- readLines("tmp/projects_list.txt")
+projects_list <- readLines("tmp/projects_files_list.txt")
+projects_list <- str_remove(projects_list, "\\.(csv|tsv|txt)$")
+
+#projects_list <- c("PRJEB107922", "PRJEB89924", "PRJNA579489")
 
 #List of dada2 ASV taxonomy filenames (ampliseq/dada2 output)
 taxo_files=c()
@@ -69,18 +73,16 @@ pr2_silva_joined <-  map2(.x= pr2_taxonomic_tables_formatted,
                      set_names( paste0("joined_", projects_list))
 
 #Above:
-#pr2_silva_joined is a list
+#pr2_silva_joined is a list where
 #each element is a table where lines are ASV_ID and columns are pr2 and silva taxonomy and confidence
 ##############################
 
 
 ## Get conflict info on the domain level ----
 #Table listing the ASVs for which pr2 and silva gave different domains
-#(and the domain assignated with pr2 and silva)
+#and the domain assignated with pr2 and silva
 domain_conflicts_per_projects <- map(pr2_silva_joined, domain_conflict) |> 
   set_names(paste0("domain_conflicts_", projects_list))
-
-
 
 
 # Add the consensus taxonomy on the joined taxonomic tables ----
@@ -89,3 +91,17 @@ pr2_silva_consensus <- map(pr2_silva_joined, .f=make_consensus_taxo)
 
 
 
+#Export the tables to output/agregated/taxonomy ----
+walk2(.x=pr2_silva_consensus,
+     .y=projects_list,
+     .f= ~ write_tsv(.x,
+        file=str_c("output/agregated/taxonomy/pr2_silva_consensus_",
+        .y, ".tsv"), append=FALSE)
+  )
+
+walk2(.x=domain_conflicts_per_projects,
+     .y=projects_list,
+     .f= ~ write_tsv(.x,
+     file=str_c("output/agregated/taxonomy/domain_conflicts_",
+     .y, ".tsv"), append=FALSE)
+     )

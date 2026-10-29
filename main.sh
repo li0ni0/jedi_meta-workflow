@@ -54,7 +54,19 @@ sbatch scripts/run_ampliseq.sh
 #Re-run ampliseq with option -resume for projects that had en error 
 FILE=tmp/ampliseq_projectsTOresume.tsv
 
-if [[ -f "$FILE" &&  $(wc -l < "$FILE") -gt 1 ]]; then
+if [[ -f "$FILE" &&  $(wc -l < "$FILE") -gt 0 ]]; then
   sbatch scripts/resume_ampliseq.sh
 fi
 
+########################################################
+# Create formatted taxonomy tables (R script)
+########################################################
+
+[ ! -d "output/agregated/taxonomy" ] && mkdir output/agregated/taxonomy
+
+module load r/4.5.2
+
+sbatch \
+    #--mem 20GB \
+    #--output output/agregated/taxonomy \
+    --wrap="Rscript scripts/consensus_taxo.R"
