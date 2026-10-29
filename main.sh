@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 ############################################################
 # Help                                                     
 ############################################################
@@ -49,30 +48,29 @@ sbatch scripts/run_fetchngs.sh
 # Run ampliseq
 ########################################################
 
-#Check fetchngs ran well before running ampliseq ?
-#grep --quiet "Execution complete -- Goodbye" .nextflow.log
-#grep $project $FILE #instead so we check that the project is indeed in the samplesheet ?
 
 sbatch scripts/run_ampliseq.sh
 
-#Re-run ampliseq with option -resume for what needs to
+#Re-run ampliseq with option -resume for projects that had en error 
 FILE=tmp/ampliseq_projectsTOresume.tsv
 
-if [[ -f "$FILE" &&  $(wc -l < "$FILE") -gt 1 ]]; then
+if [[ -f "$FILE" &&  $(wc -l < "$FILE") -gt 0 ]]; then
   sbatch scripts/resume_ampliseq.sh
 fi
 
-
-
-
 ########################################################
-# Format ampliseq ASV table for export using R
+# Create formatted taxonomy tables (R script)
 ########################################################
 
-#Keep this part ?
+[ ! -d "output/agregated/taxonomy" ] && mkdir output/agregated/taxonomy
 
-#module load r/4.3.1
+module load r/4.5.2
 
-#sbatch --mem 10GB \
-#  --output "prepare_final_table.out" \
-#  --wrap="Rscript scripts/prepare_final_tables.R"
+sbatch \
+    #--mem 20GB \
+    --wrap="Rscript scripts/consensus_taxo.R"
+
+sbatch \
+    #--mem 20GB \
+    #--output output/agregated/taxonomy \
+    --wrap="Rscript scripts/export.R"
