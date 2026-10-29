@@ -72,4 +72,3 @@ domain_conflicts_per_projects <- map(pr2_silva_joined, domain_conflict) |>
 # Add the consensus taxonomy on the joined taxonomic tables ----
 #We now have pr2, silva and consensus (confidence consensus only for the most precise taxonomic level kept)
 pr2_silva_consensus <- map(pr2_silva_joined, .f=make_consensus_taxo)
-
