@@ -32,7 +32,6 @@ usage() {
 #########
 
 #Default values
-add_projects="no"
 export="none"
 
 while getopts ":ha:e:" OPTION
@@ -72,10 +71,7 @@ done
 ########################################################
 
 if [ -f $add_projects ] ; then #if an existing file is given to option -a
-  echo "Running fetchngs only for the project(s) listed in ${add_projects}:"
-  cat $add_projects
-  sbatch scripts/run_fetchngs.sh $add_projects
-
+  echo "Running fetchngs only for the project(s) listed in the given file ${add_projects}:"
 else
   #Gets the list of projects (samplesheet) (can be any type of ID supported by fetchngs) and lists them in a file
   echo "Running fetchngs for every project that has a samplesheet in input/fetchngs/samplesheet"
@@ -85,24 +81,22 @@ else
     > tmp/projects_files_list.txt
 
   echo "The file tmp/projects_files_list.txt was created."
-  cat tmp/projects_files_list.txt
-  sbatch scripts/run_fetchngs.sh tmp/projects_files_list.txt
-
+  add_projects="tmp/projects_files_list.txt"
 fi
-
-
+cat $add_projects
+sbatch scripts/run_fetchngs.sh $add_projects
 
 ########################################################
 # Run ampliseq
 ########################################################
 
-sbatch scripts/run_ampliseq.sh
+sbatch scripts/run_ampliseq.sh $add_projects
 
 #Re-run ampliseq with option -resume for projects that had en error 
 FILE=tmp/ampliseq_projectsTOresume.tsv
 
 if [[ -f "$FILE" &&  $(wc -l < "$FILE") -gt 0 ]]; then
-  sbatch scripts/resume_ampliseq.sh
+  sbatch scripts/resume_ampliseq.sh 
 fi
 
 ########################################################

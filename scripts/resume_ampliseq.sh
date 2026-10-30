@@ -15,7 +15,7 @@ while IFS= read -r line; do
   project=${LINE[0]}
   RUN_NAME=${LINE[1]}
 
-  nextflow run nf-core/ampliseq -r 3.0.0 \
+  nextflow run nf-core/ampliseq -r 3.1.0 \
     -profile abims \
     -params-file ./input/ampliseq/params_ampliseq.yaml \
     --input ./output/fetchngs/${project}/samplesheet/samplesheet.csv \

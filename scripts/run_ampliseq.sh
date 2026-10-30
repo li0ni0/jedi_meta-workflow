@@ -27,7 +27,7 @@ while IFS= read -r project_file; do
     else
       echo "$DIR directory does not exist. Running ampliseq for ${project} project."
       
-      nextflow run nf-core/ampliseq -r 3.0.0 \
+      nextflow run nf-core/ampliseq -r 3.1.0 \
         -profile abims \
         -params-file ./input/ampliseq/params_ampliseq.yaml \
         --input ./output/fetchngs/${project}/samplesheet/samplesheet.csv \
@@ -47,7 +47,7 @@ while IFS= read -r project_file; do
     echo "$FILE does not exist or is empty. Run fetchngs for ${project} first. "
   fi
 
-done < tmp/projects_files_list.txt
+done < $1
 
 #Displays failed run in run_ampliseq.out
 if [[ -f "tmp/ampliseq_projectsTOresume.tsv" &&  $(wc -l < "tmp/ampliseq_projectsTOresume.tsv") -gt 0 ]]; then
