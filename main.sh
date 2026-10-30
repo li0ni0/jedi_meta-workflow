@@ -58,3 +58,9 @@ if [[ -f "$FILE" &&  $(wc -l < "$FILE") -gt 1 ]]; then
   sbatch scripts/resume_ampliseq.sh
 fi
 
+########################################################
+# Agregate ampliseq outputs per projects
+########################################################
+[ ! -d "output/agregated" ] && mkdir output/agregated
+
+sbatch scripts/agregate_ampliseq_outputs.sh
