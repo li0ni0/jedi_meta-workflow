@@ -36,7 +36,7 @@ cat output/ampliseq_2db/*/overall_summary.tsv > output/agregated/overall_summary
 # Taxonomy (R script)
 ########################################################
 
-[ ! -d "output/agregated/taxonomy" ] && mkdir output/agregated/taxonomy
+[ ! -d "output/taxo_per_project" ] && mkdir output/taxo_per_project
 
 module load r/4.5.2
 
@@ -44,7 +44,10 @@ sbatch \
     #--mem 20GB \
     --wrap="Rscript scripts/consensus_taxo.R"
 
-sbatch \
-    #--mem 20GB \
-    #--output output/agregated/taxonomy \
-    --wrap="Rscript scripts/export.R"
+if [ export=="none" ]; then
+  echo "No export of R formatted taxonomy tables."
+else
+  sbatch \
+  #--mem 20GB \
+  --wrap="Rscript scripts/export.R $export"
+fi

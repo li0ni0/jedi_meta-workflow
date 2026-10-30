@@ -44,3 +44,37 @@ In the folder output/taxo_per_project, for each project we have the following ta
   The consensus is either pr2 or silva assignation kept and a column consensus_db clearly indicates which database made consensus.  
 - **domain_conflicts_{ID_PROJECT}.tsv**  
   It states the ASVs that silva and pr2 assigned to different domains along with both assignated domains.  
+
+
+## Options
+
+**-h**  to print the help  
+**-a**  Path to a file listing the samplesheets you want to analyse (one per line).  
+    Samplesheets must be named ID_PROJECT.csv with extension .csv .tsv or .txt  
+        Example:  
+        ID_PROJECT1.csv  
+        ID_PROJECT2.tsv  
+        ...    
+    If there are some other projects samplesheets, they will be ignored, even if their outputs have been deleted from the working directory.  
+    Can be used when you have already successfully ran ampliseq on some projects and deleted their outputs than added some samplesheet for projects you also  want to run (without running the other ones again).
+**-e**   Can take the values joined, conflicts or both. Default is none.  
+         "joined" to export the tables with pr2, silva and consensus taxonomies (pr2_silva_consensus.tsv)  
+         "conflicts" to export the tables listing domain conflicts (domain_conflicts.tsv)  
+         "both" to export taxonomy and conflicts  
+         One table per project.   
+
+
+## Usage
+
+sbatch main.sh -a <tmp/add_new_projects.txt> -e <joined;conflicts;both> [-h for help]  
+
+**Examples:**
+sbatch main.sh -a "tmp/add_new_projects.txt" -e both  
+sbatch main.sh -e both  
+
+
+## Main steps
+
+1. Manual writing of input files  
+2. Fetchngs: fastq downloading, ampliseq samplesheet(s) creation  
+3. Ampliseq: ASVs calculation, taxonomic assignments  
