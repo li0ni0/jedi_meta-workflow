@@ -55,7 +55,7 @@ domain_conflict <- function(pr2_silva_joined_taxonomy_table){
 
 
 
-### Make consesus taxonomy ----
+### Make consensus taxonomy ----
 
 make_consensus_taxo <- function(taxonomy) {
   taxonomy |> 
@@ -75,6 +75,10 @@ make_consensus_taxo <- function(taxonomy) {
         str_detect(silva_dada2_taxonomy, "^Bacteria|^Archaea") ~ silva_dada2_confidence,
         pr2_dada2_taxonomy == "" | silva_dada2_taxonomy == "" ~ NA,
         .default = NA
+      ),
+      consensus_db = case_when(
+        consensus_dada2_taxonomy==pr2_dada2_taxonomy ~ "pr2",
+        consensus_dada2_taxonomy==silva_dada2_taxonomy ~ "silva"
       )
     )
 }
