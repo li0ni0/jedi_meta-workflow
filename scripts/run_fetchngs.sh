@@ -9,24 +9,9 @@ module load nextflow/26.04.4
 module load singularity
 
 
-#Gets the list of projects (can be any type of ID supported by fetchngs)
-#and lists them in a file
-#to run fetchngs for each of them.
-
-ls input/fetchngs/samplesheet | \
-    grep -E "^\S+\.(csv|tsv|txt)$" | \
-    grep -E "PRJ|SRR|SRX|SRS|SAM|SRP|SRA|ERR|ERX|ERS|ERP|ERA|DRR|DRX|DRS|DRP|DRA|GSM|GSE" \
-    > tmp/projects_files_list.txt
-
-echo "The file tmp/projects_files_list.txt was created."
-echo "The projects' IDs are:"
-cat tmp/projects_files_list.txt
-
-
 #Check if output/fetchngs/$project exists and run fetchngs if not
-#for all projects listed in tmp/projects_files_list.txt
+#for all projects listed automatically in tmp/projects_files_list.txt or manually in $add_projects
 while IFS= read -r project_file; do
-  
   project="${project_file%.*}"
   DIR=output/fetchngs/$project
 
@@ -40,11 +25,12 @@ while IFS= read -r project_file; do
       --input ./input/fetchngs/samplesheet/${project_file} \
       --outdir ./output/fetchngs/${project}
 
-    if (( $(tail -n 1 .nextflow/history | cut -f4)=="ERR" )); then
-      RUN_NAME=$(tail -n 1 .nextflow/history | cut -f3)
+    last_line=$(tail -n 1 .nextflow/history)
+    status=$(echo ${last_line} | cut -f4)
+    if [[ $status == "ERR" ]] && echo "$last_line" | grep -q "${project}"; then
+      RUN_NAME=$(echo ${last_line} | cut -f3)
       echo "fetchngs run on the project ${project} failed. Correct the script and run again with -resume ${RUN_NAME} (run name)."
-      echo -e "${project}\t${RUN_NAME}" >> input/fetchngs/projectsTOresume.tsv
     fi
   fi
 
-done < tmp/projects_files_list.txt
+done < $1

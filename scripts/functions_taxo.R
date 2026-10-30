@@ -2,7 +2,8 @@
 
 
 # SILVA confidence scores ----
-# Set to NA when it's not a real value
+# Set confidence to NA when it's not the real value given
+
 manage_silva_confidences <- function(silva_taxonomy_table, taxo_ranks){
   for (r in taxo_ranks) {
     col_taxo <- r
@@ -19,22 +20,8 @@ manage_silva_confidences <- function(silva_taxonomy_table, taxo_ranks){
   return(silva_taxonomy_table)
 }
 
+
 #Table formatting ----
-format_taxo_table <- function(refDB_project_taxo) {
-  if (str_detect(deparse(substitute(refDB_project_taxo)), "pr2")){
-    refDB_project_taxo |> 
-      unite(col=pr2_dada2_taxonomy, Domain:Species, sep=";") |> 
-      select(ASV_ID, pr2_dada2_taxonomy, confidence) |> 
-      rename(pr2_dada2_confidence=confidence)
-  } else if (str_detect(deparse(substitute(refDB_project_taxo)), "silva")) {
-    refDB_project_taxo |> 
-      unite(col=silva_dada2_taxonomy, Domain:Species, sep=";") |> 
-      select(ASV_ID, silva_dada2_taxonomy, confidence) |> 
-      rename(silva_dada2_confidence=confidence)
-  } else {
-    print("Reference database is not pr2 and not silva.")
-  }
-}
 
 format_taxo_table_pr2 <- function(refDB_project_taxo) {
     refDB_project_taxo |> 
@@ -55,7 +42,6 @@ format_taxo_table_silva <- function(refDB_project_taxo) {
 
 
 
-
 ## Get conflict info on the domain level ----
 
 domain_conflict <- function(pr2_silva_joined_taxonomy_table){
@@ -69,7 +55,7 @@ domain_conflict <- function(pr2_silva_joined_taxonomy_table){
 
 
 
-### Make consesus taxonomy ----
+### Make consensus taxonomy ----
 
 make_consensus_taxo <- function(taxonomy) {
   taxonomy |> 
@@ -89,11 +75,11 @@ make_consensus_taxo <- function(taxonomy) {
         str_detect(silva_dada2_taxonomy, "^Bacteria|^Archaea") ~ silva_dada2_confidence,
         pr2_dada2_taxonomy == "" | silva_dada2_taxonomy == "" ~ NA,
         .default = NA
+      ),
+      consensus_db = case_when(
+        consensus_dada2_taxonomy==pr2_dada2_taxonomy ~ "pr2",
+        consensus_dada2_taxonomy==silva_dada2_taxonomy ~ "silva"
       )
     )
 }
-
-
-
-
 

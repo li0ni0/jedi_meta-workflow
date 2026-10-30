@@ -27,7 +27,6 @@ To place in the folder input/ampliseq:
     The first column must have the header "ID" and contain the list of Experiment Accession (from ENA EBI...) corresponding to the IDs given in input/fetchngs/samplesheet/{ID_PROJECT}.csv. This {ID_Project}_metadata.tsv file must be placed in the folder input/ampliseq/metadata.  
 
 
-
 ## Outputs  
 In the folder output/agregated are found tables grouping all the projects together.
 
