@@ -25,10 +25,11 @@ while IFS= read -r project_file; do
       --input ./input/fetchngs/samplesheet/${project_file} \
       --outdir ./output/fetchngs/${project}
 
-    if (( $(tail -n 1 .nextflow/history | cut -f4)=="ERR" )); then
-      RUN_NAME=$(tail -n 1 .nextflow/history | cut -f3)
+    last_line=$(tail -n 1 .nextflow/history)
+    status=$(echo ${last_line} | cut -f4)
+    if [[ $status == "ERR" ]] && echo "$last_line" | grep -q "${project}"; then
+      RUN_NAME=$(echo ${last_line} | cut -f3)
       echo "fetchngs run on the project ${project} failed. Correct the script and run again with -resume ${RUN_NAME} (run name)."
-      echo -e "${project}\t${RUN_NAME}" >> input/fetchngs/projectsTOresume.tsv
     fi
   fi
 

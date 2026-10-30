@@ -105,24 +105,9 @@ if [[ -f "$FILE" &&  $(wc -l < "$FILE") -gt 0 ]]; then
   sbatch scripts/resume_ampliseq.sh
 fi
 
-
-
 ########################################################
-# Create formatted taxonomy tables (R script)
+# Agregate ampliseq outputs per projects
 ########################################################
+[ ! -d "output/agregated" ] && mkdir output/agregated
 
-[ ! -d "output/taxo_per_project" ] && mkdir output/taxo_per_project
-
-module load r/4.5.2
-
-sbatch \
-    #--mem 20GB \
-    --wrap="Rscript scripts/consensus_taxo.R"
-
-if [ export=="none" ]; then
-  echo "No export of R formatted taxonomy tables."
-else
-  sbatch \
-  #--mem 20GB \
-  --wrap="Rscript scripts/export.R $export"
-fi
+sbatch scripts/agregate_ampliseq_outputs.sh
