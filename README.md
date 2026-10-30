@@ -1,6 +1,6 @@
 # jedi_meta-workflow
 
-## Input  
+## Inputs  
 
 ### For fetchngs:  
 To place in the folder input/fetchngs:  
@@ -11,7 +11,7 @@ To place in the folder input/fetchngs:
     (inconstitent with fetchngs documentation)    
     When both ena_metadata_fields and sample_mapping_fields are set to default, the latter is not a substring of the first.  
 - **samplesheet** folder:  
-    Contains input files of fetchngs. These files must be named {ID_PROJECT}.csv and contain one column, without header, listing the IDs of samples we want to download with fetchngs in the project. Only the project ID if you want to download every fastq available in the project. See fetchngs doc for more information [fetchngs: Usage](https://nf-co.re/fetchngs/1.13.0/docs/usage).  
+    Contains input files of fetchngs. These files must be named {ID_PROJECT}.csv, with extension .csv .tsv or .txt and must contain one column, without header, listing the IDs of samples we want to download with fetchngs in the project. Only the project ID if you want to download every fastq available in the project. See fetchngs doc for more information [fetchngs: Usage](https://nf-co.re/fetchngs/1.13.0/docs/usage).  
 
 What it does, for each projects separately:  
 - download listed fastq or all of them if the name of the project was given in input/{ID_PROJECT}.csv  
@@ -25,3 +25,22 @@ To place in the folder input/ampliseq:
     - primer sequences are set to the ssu v4v5 (universal primer)  
 - **{ID_Project}_metadata.tsv** optional file containing metadata corresponding to a specific project.  
     The first column must have the header "ID" and contain the list of Experiment Accession (from ENA EBI...) corresponding to the IDs given in input/fetchngs/samplesheet/{ID_PROJECT}.csv. This {ID_Project}_metadata.tsv file must be placed in the folder input/ampliseq/metadata.  
+
+
+
+## Outputs  
+In the folder output/agregated are found tables grouping all the projects together.
+
+- [**cutadapt_dada2_summary.tsv**](https://nf-co.re/ampliseq/3.1.0/docs/output/#preprocessing):    
+    Summary of read numbers that passed cutadapt and DADA2 processing steps, for each sample  
+- [**overall_summary.tsv**](https://nf-co.re/ampliseq/3.1.0/docs/output/#pipeline-information):  
+    "how many reads per sample passed each pipeline step in which a loss can occur"  
+- [**all_projects_ampliseq_counts.tsv.gz**](https://nf-co.re/ampliseq/3.1.0/docs/output/#summary-tables):   
+    "ASV counts in long format (asv_id, sample, count), zero-count rows dropped. Sourced from DADA2’s raw output, before clustering and any post-processing filters below"   
+
+In the folder output/taxo_per_project, for each project we have the following tables:  
+- **pr2_silva_consensus_{ID_PROJECT}.tsv**  
+  containing pr2, silva and our consensus taxonomic assignation and confidence for each project.  
+  The consensus is either pr2 or silva assignation kept and a column consensus_db clearly indicates which database made consensus.  
+- **domain_conflicts_{ID_PROJECT}.tsv**  
+  It states the ASVs that silva and pr2 assigned to different domains along with both assignated domains.  
