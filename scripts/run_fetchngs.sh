@@ -5,6 +5,8 @@
 #SBATCH --mem 5GB
 #SBATCH --output run_fetchngs.out
 
+
+
 module load nextflow/26.04.4
 module load singularity
 

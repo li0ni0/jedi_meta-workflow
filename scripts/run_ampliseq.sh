@@ -8,6 +8,7 @@
 module load nextflow/26.04.4
 module load singularity
 
+[ ! -d "output/ampliseq_2db" ] && mkdir output/ampliseq_2db
 
 #Check that fetchngs samplesheet output was created and is not empty for each project
 #Better than not empty, check if
