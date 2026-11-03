@@ -80,8 +80,7 @@ else
   #Gets the list of projects (samplesheet) (can be any type of ID supported by fetchngs) and lists them in a file
   echo "Running fetchngs for every project that has a samplesheet in input/fetchngs/samplesheet"
   ls input/fetchngs/samplesheet | \
-    grep -E "^\S+\.(csv|tsv|txt)$" | \
-    grep -E "PRJ|SRR|SRX|SRS|SAM|SRP|SRA|ERR|ERX|ERS|ERP|ERA|DRR|DRX|DRS|DRP|DRA|GSM|GSE" | sort \
+    grep -E "^\S+\.(csv|tsv|txt)$" | sort \
     > tmp/projects_files_list.txt
 
   echo "The file tmp/projects_files_list.txt was created."
