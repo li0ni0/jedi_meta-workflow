@@ -23,9 +23,9 @@ while IFS= read -r line; do
     -resume $RUN_NAME
     #if successful, delete tmp/ampliseq_projectsTOresume.tsv corresponding line
     last_line=$(tail -n 1 .nextflow/history)
-    status=$(echo ${last_line} | cut -f4)
+    status=$(echo "${last_line}" | cut -f4)
     if [[ $status == "OK" ]] && echo "$last_line" | grep -q "${project}"; then
-      RUN_NAME=$(echo ${last_line} | cut -f3)
+      RUN_NAME=$(echo "${last_line}" | cut -f3)
       echo "ampliseq resumed run on the project ${project} succeeded."
       sed -i "/${RUN_NAME}/d" ./tmp/ampliseq_projectsTOresume.tsv
     fi

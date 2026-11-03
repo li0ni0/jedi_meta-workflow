@@ -28,9 +28,9 @@ while IFS= read -r project_file; do
       --outdir ./output/fetchngs/${project}
 
     last_line=$(tail -n 1 .nextflow/history)
-    status=$(echo ${last_line} | cut -f4)
+    status=$(echo "${last_line}" | cut -f4)
     if [[ $status == "ERR" ]] && echo "$last_line" | grep -q "${project}"; then
-      RUN_NAME=$(echo ${last_line} | cut -f3)
+      RUN_NAME=$(echo "${last_line}" | cut -f3)
       echo "fetchngs run on the project ${project} failed. Correct the script and run again with -resume ${RUN_NAME} (run name)."
     fi
   fi
