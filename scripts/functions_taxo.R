@@ -79,7 +79,7 @@ make_consensus_taxo <- function(taxonomy) {
       consensus_db = case_when(
         consensus_dada2_taxonomy==pr2_dada2_taxonomy ~ "pr2",
         consensus_dada2_taxonomy==silva_dada2_taxonomy ~ "silva",
-        consensus_dada2_taxonomy=="Eukaryota:mito" ~ "Eukaryota:mito",
+        consensus_dada2_taxonomy=="Eukaryota:mito" ~ "silva",
         consensus_dada2_taxonomy=="conflict" ~ "conflict_Euk_Chloro",
         consensus_dada2_taxonomy=="unassigned" ~ "unassigned",
         .default = NA

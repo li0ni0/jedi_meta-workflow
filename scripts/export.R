@@ -18,21 +18,21 @@ if (export=="joined"){
         .y=projects_list,
         .f= ~ write_tsv(.x,
             file=str_c("output/taxo_per_project/domain_conflicts_",
-            .y, ".tsv"), append=FALSE)
-  )
+            .y, ".tsv"), append=FALSE))
 } else if (export=="both"){
   walk2(.x=pr2_silva_consensus,
         .y=projects_list,
         .f= ~ write_tsv(.x,
             file=str_c("output/taxo_per_project/pr2_silva_consensus_",
-            .y, ".tsv"), append=FALSE)
+            .y, ".tsv"), append=FALSE))
 
   walk2(.x=domain_conflicts_per_projects,
         .y=projects_list,
         .f= ~ write_tsv(.x,
             file=str_c("output/taxo_per_project/domain_conflicts_",
-            .y, ".tsv"), append=FALSE)
+            .y, ".tsv"), append=FALSE))
 } else{
   print(export)
   print('Invalid string given for -e argument. Use one of "joined", "conflicts" or "both".')
 }
+
