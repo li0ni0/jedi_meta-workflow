@@ -40,7 +40,6 @@ while IFS= read -r project_file; do
     if [[ $status == "ERR" ]] && echo "$last_line" | grep -q "${project}"; then
       RUN_NAME=$(echo "${last_line}" | cut -f3)
       echo "ampliseq run on the project ${project} failed. It will be resumed -resume ${RUN_NAME} (run name)."
-
       echo -e "${project}\t${RUN_NAME}" >> tmp/ampliseq_projectsTOresume.tsv
     fi
 
