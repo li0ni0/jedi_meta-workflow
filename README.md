@@ -30,17 +30,38 @@ To place in the folder input/ampliseq:
 ## Outputs  
 In the folder output/agregated are found tables grouping all the projects together.
 
+- **ASV_seqs.fasta**:   
+    Contains the ASVs IDs and sequences of all the projects  
 - [**cutadapt_dada2_summary.tsv**](https://nf-co.re/ampliseq/3.1.0/docs/output/#preprocessing):    
     Summary of read numbers that passed cutadapt and DADA2 processing steps, for each sample  
 - [**overall_summary.tsv**](https://nf-co.re/ampliseq/3.1.0/docs/output/#pipeline-information):  
     "how many reads per sample passed each pipeline step in which a loss can occur"  
 - [**all_projects_ampliseq_counts.tsv.gz**](https://nf-co.re/ampliseq/3.1.0/docs/output/#summary-tables):   
     "ASV counts in long format (asv_id, sample, count), zero-count rows dropped. Sourced from DADA2’s raw output, before clustering and any post-processing filters below"   
+- **agregated_consensus_taxonomy.tsv**:  
+    Consensus taxonomy table agregated for all the projects. The columns are:  
+    ASV_ID 
+    Projects: column listing all the projects where the ASV is found  
+    consensus_taxo: consensus of all consensus_dada2_taxonomy for the ASV (shortest)  
+    consensus_conf: consensus of all consensus_dada2_confidence for the ASV (smallest)  
+    consensus_db: corresponding to consensus_dada2_taxonomy kept (silva or pr2)  
+    (duplicate, same_consensus_taxo, same_consensus_confidence: boolean values)  
+    When an ASV is present in more than one project, there can be (small) differences in dada2 taxonomic assignation between projects due to "an element of [randomness](https://github.com/benjjneb/dada2/issues/1115) in the naive Bayesian classifier method that comes from selecting the subsamples of the sequence over which boot strapping assignment is performed" and which isn't fixed by setting a seed.  
+    Thus, when the taxonomies differ, the shortest one is kept as consensus over the projects.  
+    When the taxonomies are identical but the confidences differ, the smallest confidence value is kept.  
+    
 
 In the folder output/taxo_per_project, for each project we have the following tables:  
 - **pr2_silva_consensus_{ID_PROJECT}.tsv**  
-  containing pr2, silva and our consensus taxonomic assignation and confidence for each project.  
+  contains pr2, silva and our consensus taxonomic assignation and confidence for each project.  
   The consensus is either pr2 or silva assignation kept and a column consensus_db clearly indicates which database made consensus.  
+  Rules of consensus between pr2 and silva:  
+  pr2 is kept when the ASV is assigned to _Eukaryota_  
+  silva is kept for _Bacteria_ and _Archaea_  
+  silva _Mitochondria_ are assigned _Eukaryota:mito_  
+  silva _Chloroplast_  are assigned _conflict_  
+
+
 - **domain_conflicts_{ID_PROJECT}.tsv**  
   It states the ASVs that silva and pr2 assigned to different domains along with both assignated domains.  
 
@@ -76,4 +97,5 @@ sbatch main.sh -e both
 
 1. Manual writing of input files  
 2. Fetchngs: fastq downloading, ampliseq samplesheet(s) creation  
-3. Ampliseq: ASVs calculation, taxonomic assignments  
+3. Ampliseq: ASVs calculation, taxonomic assignments    
+4. Archive containing: ampliseq outputs agregated for all the projects and the metadata  

@@ -73,9 +73,17 @@ export export="$export"
 #Run nf-core-fetchngs
 ########################################################
 
-if [ -f $add_projects ] ; then #if an existing file is given to option -a
-  echo "Running fetchngs only for the project(s) listed in the file ${add_projects}:"
-  cat ${add_projects}
+
+if [ $add_projects != "tmp/projects_files_list.txt" ] ; then
+
+  if [ -f $add_projects ]; then
+    echo "Running fetchngs only for the project(s) listed in the file ${add_projects}:"
+    cat ${add_projects}
+  else
+    echo "$add_projects file doesn't exist"
+    exit 0
+  fi
+
 else
   #Gets the list of projects (samplesheet) (can be any type of ID supported by fetchngs) and lists them in a file
   echo "Running fetchngs for every project that has a samplesheet in input/fetchngs/samplesheet"
@@ -102,9 +110,31 @@ if [[ -f "$FILE" &&  $(wc -l < "$FILE") -gt 0 ]]; then
   sbatch scripts/resume_ampliseq.sh 
 fi
 
+
+########################################################
+# Taxonomy per project (R script)
+########################################################
+
+[ ! -d "output/taxo_per_project" ] && mkdir output/taxo_per_project
+
+module load r/4.5.2
+
+sbatch \
+    #--mem 20GB \
+    --wrap="Rscript scripts/consensus_taxo.R"
+
+if [ export=="none" ]; then
+  echo "No export of R formatted taxonomy tables."
+else
+  sbatch \
+  #--mem 20GB \
+  --wrap="Rscript scripts/export.R $export"
+fi
+
+
 ########################################################
 # Agregate ampliseq outputs per projects
 ########################################################
 [ ! -d "output/agregated" ] && mkdir output/agregated
 
-sbatch scripts/agregate_ampliseq_outputs.sh
+sbatch scripts/agregate_outputs.sh
