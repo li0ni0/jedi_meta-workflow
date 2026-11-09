@@ -121,14 +121,12 @@ module load r/4.5.2
 
 sbatch \
     #--mem 20GB \
-    --wrap="Rscript scripts/consensus_taxo.R"
+    --wrap="Rscript scripts/consensus_taxo.R $export"
 
 if [ export=="none" ]; then
   echo "No export of R formatted taxonomy tables."
 else
-  sbatch \
-  #--mem 20GB \
-  --wrap="Rscript scripts/export.R $export"
+  echo "R formatted taxonomy tables exported for all the projects"
 fi
 
 
