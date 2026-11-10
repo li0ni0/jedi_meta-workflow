@@ -52,7 +52,7 @@ vsearch --fastq_chars output/fetchngs/PRJEB52329/fastq/ERX4203783_ERR4244989_1.f
 
 bin_ERX4203783=$(zcat output/fetchngs/PRJEB52329/fastq/ERX4203783_ERR4244989_1.fastq.gz | head -n 10000 | awk 'NR%4==0' | tr -d '\n' | od -An -t u1 | tr ' ' '\n' | sort -u | awk '{print $1-33}' | awk '$1 >= 0')
 zcat output/fetchngs/PRJEB52329/fastq/ERX4203783_ERR4244989_1.fastq.gz | head -n 10000 | awk 'NR%4==0' | tr -d '\n' | od -An -t u1 | tr ' ' '\n' | sort -u | awk '{print $1-33}' | awk '$1 >= 0'
-
+#If there are some values above 40 (or below 0 without last awk), it was Phred+64, change accordingly
 
 #######################
 #Once we have the quality scores
