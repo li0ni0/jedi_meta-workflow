@@ -5,7 +5,7 @@
 #SBATCH --mem 5GB
 #SBATCH --output run_fetchngs.out
 
-
+export TMPDIR="/shared/scratch/jedi_meta/"
 
 module load nextflow/26.04.4
 module load singularity

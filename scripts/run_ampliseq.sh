@@ -10,7 +10,7 @@ export TMPDIR="/shared/scratch/jedi_meta/"
 module load nextflow/26.04.4
 module load singularity
 
-[ ! -d "output/ampliseq_2db" ] && mkdir output/ampliseq_2db
+[ ! -d "output/ampliseq" ] && mkdir output/ampliseq
 
 #Check that fetchngs samplesheet output was created and is not empty for each project
 #Better than not empty, check if
@@ -24,7 +24,7 @@ while IFS= read -r project_file; do
   if [[ -f "$FILE" &&  $(wc -l < "$FILE") -gt 1 ]]; then
     echo "$FILE exists and is not empty."
     # run ampliseq
-    DIR=output/ampliseq_2db/$project
+    DIR=output/ampliseq/$project
     if [ -d "$DIR" ]; then
       echo "$DIR exists."
     else
@@ -32,9 +32,10 @@ while IFS= read -r project_file; do
       
       nextflow run nf-core/ampliseq -r 3.0.0 \
         -profile abims \
+        -c input/ampliseq/param.config \
         -params-file ./input/ampliseq/params_ampliseq.yaml \
         --input ./output/fetchngs/${project}/samplesheet/samplesheet.csv \
-        --outdir ./output/ampliseq_2db/${project}
+        --outdir ./output/ampliseq/${project}
     fi
 
     last_line=$(tail -n 1 .nextflow/history)

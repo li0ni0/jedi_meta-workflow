@@ -19,9 +19,10 @@ while IFS= read -r line; do
 
   nextflow run nf-core/ampliseq -r 3.0.0 \
     -profile abims \
+    -c input/ampliseq/param.config \
     -params-file ./input/ampliseq/params_ampliseq.yaml \
     --input ./output/fetchngs/${project}/samplesheet/samplesheet.csv \
-    --outdir ./output/ampliseq_2db/${project} \
+    --outdir ./output/ampliseq/${project} \
     -resume $RUN_NAME
     #if successful, delete tmp/ampliseq_projectsTOresume.tsv corresponding line
     last_line=$(tail -n 1 .nextflow/history)
